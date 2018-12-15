@@ -98,9 +98,20 @@ def get_input_args():
     Parameters:
      None - simply using argparse module to create & store command line arguments
     Returns:
-     parse_args() -data structure that stores the command line arguments object  
+     parse_args() -data structure that stores the command line arguments object
     """
-    pass
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--dir', dest = 'dir', action = 'store_true', 
+                        default = 'pet_images/', type = str,
+                       help = 'Path to the pet image files')
+    parser.add_argument('-a', '--algorithm', dest = 'arch', action =
+                      'append', default = 'vgg', type = str, 
+                        choices = ['vgg', 'alexnet', 'resnet'],
+                        help = 'CNN model architecture to use for image classification')
+    parser.add_argument('-df', '--dogfile', dest = 'dogfile', action =  'store_true',
+                       default = 'dognames.txt', type = str, help = '''Text file that 
+                       contains all labels associatedto dogs''')
+    return parser.parse_args()                  
 
 
 def get_pet_labels():
