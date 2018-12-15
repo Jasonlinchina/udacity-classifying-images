@@ -67,12 +67,14 @@ def main():
 
     # TODO: 1. Define end_time to measure total program runtime
     # by collecting end time
-    end_time = None
+    end_time = time()
 
     # TODO: 1. Define tot_time to computes overall runtime in
     # seconds & prints it in hh:mm:ss format
-    tot_time = None
-    print("\n** Total Elapsed Runtime:", tot_time)
+    tot_time = end_time - start_time
+    print("\n** Total Elapsed Runtime: {}:{}:{}".
+          format(int(res // 3600), int((res % 3600) // 60), 
+                 round((res % 3600) % 60)))
 
 
 
