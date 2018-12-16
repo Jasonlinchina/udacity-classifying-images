@@ -28,7 +28,7 @@ from os import listdir
 from classifier import classifier 
 
 # Imports print functions that check the lab
-from print_functions_for_lab_checks import *
+#from print_functions_for_lab_checks import *
 
 # Main program function defined below
 def main():
