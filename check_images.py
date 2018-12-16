@@ -43,7 +43,7 @@ def main():
     # TODO: 3. Define get_pet_labels() function to create pet image labels by
     # creating a dictionary with key=filename and value=file label to be used
     # to check the accuracy of the classifier function
-    answers_dic = get_pet_labels()
+    answers_dic = get_pet_labels(in_arg.dir)
 
     # TODO: 4. Define classify_images() function to create the classifier 
     # labels with the classifier function using in_arg.arch, comparing the 
@@ -114,7 +114,7 @@ def get_input_args():
     return parser.parse_args()                  
 
 
-def get_pet_labels():
+def get_pet_labels(image_dir):
     """
     Creates a dictionary of pet labels based upon the filenames of the image 
     files. Reads in pet filenames and extracts the pet image labels from the 
@@ -127,7 +127,14 @@ def get_pet_labels():
      petlabels_dic - Dictionary storing image filename (as key) and Pet Image
                      Labels (as value)  
     """
-    pass
+    petlabel_dic = {}
+    dirs = listdir(image_dir)
+    for dir in dirs:
+        label = dir.strip().split('_')
+        label.pop()
+        label = [x.lower() for x in label]
+        petlabel_dic[dir.strip()] = ' '.join(label)
+    return petlabel_dic    
 
 
 def classify_images():
