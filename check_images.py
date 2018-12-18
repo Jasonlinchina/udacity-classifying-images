@@ -54,7 +54,7 @@ def main():
     # dictionary(result_dic) to determine if classifier correctly classified
     # images as 'a dog' or 'not a dog'. This demonstrates if the model can
     # correctly classify dog images as dogs (regardless of breed)
-    adjust_results4_isadog()
+    adjust_results4_isadog(result_dic, in_arg.dogfile)
 
     # TODO: 6. Define calculates_results_stats() function to calculate
     # results of run and puts statistics in a results statistics
@@ -208,7 +208,22 @@ def adjust_results4_isadog(results_dic, dogsfile):
     Returns:
            None - results_dic is mutable data type so no return needed.
     """           
-    pass
+    dogname_dic = {}
+    with open(dogsfile, 'r') as df:
+        for dog in df.readline():
+            dog = dog.rstrip()
+            dogname_dic[dog] = 1
+            
+    for filename, value in results_dic.items():
+        if value[0] in dogname_dic.keys():
+            results_dic[filename].append(1)
+        else:
+            results_dic[filename].append(0)
+        
+        if value[1] in dogname_dic.keys():
+            results_dic[filename].append(1)
+        else:
+            results_dic[filename].append(0)
 
 
 def calculates_results_stats():
