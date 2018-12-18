@@ -48,7 +48,7 @@ def main():
     # TODO: 4. Define classify_images() function to create the classifier 
     # labels with the classifier function using in_arg.arch, comparing the 
     # labels, and creating a dictionary of results (result_dic)
-    result_dic = classify_images()
+    result_dic = classify_images(in_arg.dir, answers_dic, in_arg.arch)
     
     # TODO: 5. Define adjust_results4_isadog() function to adjust the results
     # dictionary(result_dic) to determine if classifier correctly classified
@@ -137,7 +137,7 @@ def get_pet_labels(image_dir):
     return petlabel_dic    
 
 
-def classify_images():
+def classify_images(images_dir, petlabel_dic, model):
     """
     Creates classifier labels with classifier function, compares labels, and 
     creates a dictionary containing both labels and comparison of them to be
@@ -162,10 +162,25 @@ def classify_images():
                     idx 2 = 1/0 (int)   where 1 = match between pet image and 
                     classifer labels and 0 = no match between labels
     """
-    pass
+    results_dic = {}
+    for filename, label in petlabel_dic.items():
+        result = classifier(images_dir + filename, model)
+        result = result.strip().lower()
+        found_idx = result.find(label)
+        if found_idx < 0:
+            results_dic[filename] = [label, result, 0]
+        elif (
+        (found_idx == 0 or result[found_idx - 1] == " ") and
+        (len(label) == len(result) or result[found_idx + len(label):
+        found_idx + len(label) + 1] in (" ", ","))
+        ):
+            results_dic[filename] = [label, result, 1]
+        else:
+            results_dic[filename] = [label, result, 0]
+    return results_dic
 
 
-def adjust_results4_isadog():
+def adjust_results4_isadog(results_dic, dogsfile):
     """
     Adjusts the results dictionary to determine if classifier correctly 
     classified images 'as a dog' or 'not a dog' especially when not a match. 
@@ -259,4 +274,5 @@ def print_results():
 # Call to main function to run the program
 if __name__ == "__main__":
     main()
+
 
