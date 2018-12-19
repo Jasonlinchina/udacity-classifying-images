@@ -63,7 +63,7 @@ def main():
 
     # TODO: 7. Define print_results() function to print summary results, 
     # incorrect classifications of dogs and breeds if requested.
-    print_results(results_stats_dic, in_arg.arch)
+    print_results(results_stats_dic, in_arg.arch, result_dic)
 
     # TODO: 1. Define end_time to measure total program runtime
     # by collecting end time
@@ -103,8 +103,7 @@ def get_input_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dir', dest = 'dir', default = 'pet_images/', type = str,
                        help = 'Path to the pet image files')
-    parser.add_argument('-a', '--algorithm', dest = 'arch', action =
-                      'append', default = 'vgg', type = str, 
+    parser.add_argument('-a', '--algorithm', dest = 'arch', default = 'vgg', type = str, 
                         choices = ['vgg', 'alexnet', 'resnet'],
                         help = 'CNN model architecture to use for image classification')
     parser.add_argument('-df', '--dogfile', dest = 'dogfile', default = 'dognames.txt', 
@@ -169,7 +168,7 @@ def classify_images(images_dir, petlabel_dic, model):
             results_dic[filename] = [label, result, 0]
         elif (
         (found_idx == 0 or result[found_idx - 1] == " ") and
-        (len(label) == len(result) or result[found_idx + len(label):
+        (found_idx + len(label) == len(result) or result[found_idx + len(label):
         found_idx + len(label) + 1] in (" ", ","))
         ):
             results_dic[filename] = [label, result, 1]
@@ -253,6 +252,7 @@ def calculates_results_stats(results_dic):
     num_cor_dog = 0    
     num_cor_nondog = 0
     num_cor_breed = 0
+    num_match = 0
     for value in results_dic.values():
         if value[2] == 1 and value[3] == 1 and value[4] == 1:
             num_dog += 1
@@ -267,6 +267,9 @@ def calculates_results_stats(results_dic):
             num_cor_nondog += 1
         else:
             next
+        
+        if value[2] == 1:
+            num_match += 1
             
     results_stats = {}
     num_nondog = len(results_dic.keys()) - num_dog
@@ -279,12 +282,12 @@ def calculates_results_stats(results_dic):
         results_stats['pct_cor_nondog'] = '0.00%'
     results_stats['num_cor_breed'] = num_cor_breed
     results_stats['pct_cor_breed'] = '{:.2%}'.format(num_cor_breed / num_dog)
-    results_stats['num_cor_match'] = num_cor_dog + num_cor_nondog
-    results_stats['pct_cor_match'] = '{:.2%}'.format(results_stats['num_cor_match'] / len(results_dic.keys()))
+    results_stats['num_match'] = num_match
+    results_stats['pct_cor_match'] = '{:.2%}'.format(num_match / len(results_dic.keys()))
     
     return results_stats
 
-def print_results(results_stats_dic, model):
+def print_results(results_stats_dic, model, result_dic):
     """
     Prints summary results on the classification and then prints incorrectly 
     classified dogs and incorrectly classified dog breeds if user indicates 
@@ -316,7 +319,8 @@ def print_results(results_stats_dic, model):
     print("model:", model)
     for key, value in results_stats_dic.items():
         print(key, ':', value)
-
+    for key, value in result_dic.items():
+        print(key, '\t', value[0], '\t', value[1],'\t', value[2],'\t', value[3],'\t', value[4])
                 
                 
 # Call to main function to run the program
