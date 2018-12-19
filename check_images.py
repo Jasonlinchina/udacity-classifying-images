@@ -63,7 +63,7 @@ def main():
 
     # TODO: 7. Define print_results() function to print summary results, 
     # incorrect classifications of dogs and breeds if requested.
-    print_results(results_stats_dic)
+    print_results(results_stats_dic, in_arg.arch)
 
     # TODO: 1. Define end_time to measure total program runtime
     # by collecting end time
@@ -73,8 +73,8 @@ def main():
     # seconds & prints it in hh:mm:ss format
     tot_time = end_time - start_time
     print("\n** Total Elapsed Runtime: {}:{}:{}".
-          format(int(res // 3600), int((res % 3600) // 60), 
-                 round((res % 3600) % 60)))
+          format(int(tot_time // 3600), int((tot_time % 3600) // 60), 
+                 round((tot_time % 3600) % 60)))
 
 
 
@@ -101,16 +101,14 @@ def get_input_args():
      parse_args() -data structure that stores the command line arguments object
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--dir', dest = 'dir', action = 'store_true', 
-                        default = 'pet_images/', type = str,
+    parser.add_argument('-d', '--dir', dest = 'dir', default = 'pet_images/', type = str,
                        help = 'Path to the pet image files')
     parser.add_argument('-a', '--algorithm', dest = 'arch', action =
                       'append', default = 'vgg', type = str, 
                         choices = ['vgg', 'alexnet', 'resnet'],
                         help = 'CNN model architecture to use for image classification')
-    parser.add_argument('-df', '--dogfile', dest = 'dogfile', action =  'store_true',
-                       default = 'dognames.txt', type = str, help = '''Text file that 
-                       contains all labels associatedto dogs''')
+    parser.add_argument('-df', '--dogfile', dest = 'dogfile', default = 'dognames.txt', 
+                        type = str, help = 'Text file that contains all labels associatedto dogs')
     return parser.parse_args()                  
 
 
@@ -210,7 +208,7 @@ def adjust_results4_isadog(results_dic, dogsfile):
     """           
     dogname_dic = {}
     with open(dogsfile, 'r') as df:
-        for dog in df.readline():
+        for dog in df.readlines():
             dog = dog.rstrip()
             dogname_dic[dog] = 1
             
@@ -269,23 +267,24 @@ def calculates_results_stats(results_dic):
             num_cor_nondog += 1
         else:
             next
+            
     results_stats = {}
     num_nondog = len(results_dic.keys()) - num_dog
     results_stats['num_cor_dog'] = num_cor_dog
-    results_stats['pct_cor_dog'] = '{:.2%}'.format(num_cor_dog/num_dog)
+    results_stats['pct_cor_dog'] = '{:.2%}'.format(num_cor_dog / num_dog)
     results_stats['num_cor_nondog'] = num_cor_nondog
     if num_cor_nondog > 0:
-        results_stats['pct_cor_nondog'] = '{:.2%}'.format(num_cor_nondog/num_nondog)
+        results_stats['pct_cor_nondog'] = '{:.2%}'.format(num_cor_nondog / num_nondog)
     else:
         results_stats['pct_cor_nondog'] = '0.00%'
     results_stats['num_cor_breed'] = num_cor_breed
-    results_stats['pct_cor_breed'] = '{:.2%}'.format(num_cor_breed/num_dog)
+    results_stats['pct_cor_breed'] = '{:.2%}'.format(num_cor_breed / num_dog)
     results_stats['num_cor_match'] = num_cor_dog + num_cor_nondog
-    results_stats['pct_cor_match'] = '{:.2%}'.format(results_stats['num_cor_match']/len(results_dic.keys()))
+    results_stats['pct_cor_match'] = '{:.2%}'.format(results_stats['num_cor_match'] / len(results_dic.keys()))
     
-    return results_dic
+    return results_stats
 
-def print_results(results_stats_dic):
+def print_results(results_stats_dic, model):
     """
     Prints summary results on the classification and then prints incorrectly 
     classified dogs and incorrectly classified dog breeds if user indicates 
@@ -314,7 +313,7 @@ def print_results(results_stats_dic):
     Returns:
            None - simply printing results.
     """    
-    print("model:", in_arg.arch)
+    print("model:", model)
     for key, value in results_stats_dic.items():
         print(key, ':', value)
 
