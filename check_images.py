@@ -59,7 +59,7 @@ def main():
     # TODO: 6. Define calculates_results_stats() function to calculate
     # results of run and puts statistics in a results statistics
     # dictionary (results_stats_dic)
-    results_stats_dic = calculates_results_stats()
+    results_stats_dic = calculates_results_stats(result_dic)
 
     # TODO: 7. Define print_results() function to print summary results, 
     # incorrect classifications of dogs and breeds if requested.
@@ -226,7 +226,7 @@ def adjust_results4_isadog(results_dic, dogsfile):
             results_dic[filename].append(0)
 
 
-def calculates_results_stats():
+def calculates_results_stats(results_dic):
     """
     Calculates statistics of the results of the run using classifier's model 
     architecture on classifying images. Then puts the results statistics in a 
@@ -249,9 +249,41 @@ def calculates_results_stats():
                      percentage or a count) where the key is the statistic's 
                      name (starting with 'pct' for percentage or 'n' for count)
                      and the value is the statistic's value 
-    """
-    pass
-
+    """    
+    
+    num_dog = 0
+    num_cor_dog = 0    
+    num_cor_nondog = 0
+    num_cor_breed = 0
+    for value in results_dic.values():
+        if value[2] == 1 and value[3] == 1 and value[4] == 1:
+            num_dog += 1
+            num_cor_dog += 1
+            num_cor_breed += 1
+        elif value[2] == 0 and value[3] == 1 and value[4] == 1:
+            num_dog += 1
+            num_cor_dog += 1
+        elif value[2] == 0 and value[3] == 1 and value[4] == 0:
+            num_dog += 1
+        elif value[3] == 0 and value[4] == 0:
+            num_cor_nondog += 1
+        else:
+            next
+    results_stats = {}
+    num_nondog = len(results_dic.keys()) - num_dog
+    results_stats['num_cor_dog'] = num_cor_dog
+    results_stats['pct_cor_dog'] = '{:.2%}'.format(num_cor_dog/num_dog)
+    results_stats['num_cor_nondog'] = num_cor_nondog
+    if num_cor_nondog > 0:
+        results_stats['pct_cor_nondog'] = '{:.2%}'.format(num_cor_nondog/num_nondog)
+    else:
+        results_stats['pct_cor_nondog'] = '0.00%'
+    results_stats['num_cor_breed'] = num_cor_breed
+    results_stats['pct_cor_breed'] = '{:.2%}'.format(num_cor_breed/num_dog)
+    results_stats['num_cor_match'] = num_cor_dog + num_cor_nondog
+    results_stats['pct_cor_match'] = '{:.2%}'.format(results_stats['num_cor_match']/len(results_dic.keys()))
+    
+    return results_dic
 
 def print_results():
     """
