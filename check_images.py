@@ -63,7 +63,7 @@ def main():
 
     # TODO: 7. Define print_results() function to print summary results, 
     # incorrect classifications of dogs and breeds if requested.
-    print_results()
+    print_results(results_stats_dic)
 
     # TODO: 1. Define end_time to measure total program runtime
     # by collecting end time
@@ -285,7 +285,7 @@ def calculates_results_stats(results_dic):
     
     return results_dic
 
-def print_results():
+def print_results(results_stats_dic):
     """
     Prints summary results on the classification and then prints incorrectly 
     classified dogs and incorrectly classified dog breeds if user indicates 
@@ -314,7 +314,9 @@ def print_results():
     Returns:
            None - simply printing results.
     """    
-    pass
+    print("model:", in_arg.arch)
+    for key, value in results_stats_dic.items():
+        print(key, ':', value)
 
                 
                 
